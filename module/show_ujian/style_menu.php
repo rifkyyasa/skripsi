@@ -1,7 +1,7 @@
 <style type="text/css">
 /*Menyembunyikan semua blok soal*/
 .blok-soal{
-   display: none;
+   display: block;
 }
 /*Menyembunyikan soal yang memiliki class active*/
 .blok-soal.active{
@@ -19,7 +19,7 @@
 }
 /*Menyembunyikan input radio*/
 input[type=radio]{
-   display: none;
+   display: block;
 }
 /*Mengganti warna background huruf ketika input radio dicentang*/
 input[type=radio]:checked ~ .huruf{
@@ -170,7 +170,7 @@ input[type=radio]:checked ~ .huruf{
     }
 	.flex-putih,.flex-abu{ display:none}
 	.flex-item{ margin-left:20px;}
-}
+
 </style>
 <style>
 #fontlembarsoal{
@@ -423,6 +423,41 @@ border-color: rgb(0, 128, 0);
 background-color: rgb(51, 104, 152); 
 border-color: rgb(51, 104, 152);
 
+}
+
+/* === FIX RADIO BUTTON === */
+/* Mengatur input radio agar sejajar dengan teks */
+input[type=radio] {
+    display: inline-block; /* tampil normal */
+    margin-right: 8px; /* jarak ke teks */
+    vertical-align: middle; /* sejajar dengan teks */
+}
+
+/* === FIX TIMER STYLE === */
+#h_timer {
+    font-weight: bold;
+    font-size: 16px;
+    padding: 5px 12px;
+    background-color: #dc3545; /* merah Bootstrap */
+    color: #fff;
+    border-radius: 6px;
+    display: inline-block;
+    min-width: 90px;
+    text-align: center;
+}
+
+/* === STYLE PILIHAN JAWABAN (opsional rapi) === */
+.label-jawaban {
+    display: flex;
+    align-items: center;
+    margin-bottom: 6px;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.label-jawaban:hover {
+    background-color: #f5f5f5;
+    border-radius: 4px;
 }
 
 

@@ -109,13 +109,18 @@ switch ($_GET['act']) {
 
             $qnilai = mysqli_query($koneksi, "SELECT * FROM nilai WHERE id_siswa='{$_SESSION['id_user']}' AND id_ujian='$id_ujian'");
             $rnilai = mysqli_fetch_array($qnilai);
-            $sisa_waktu = explode(":", $rnilai['sisa_waktu']);
+
+            // Ambil waktu dari database dan pastikan angka
+            $sisa_waktu_str = !empty($rnilai['sisa_waktu']) ? $rnilai['sisa_waktu'] : "00:00:00";
+            list($jam_awal, $menit_awal, $detik_awal) = explode(":", $sisa_waktu_str);
+            echo "<!-- DEBUG: sisa_waktu_str = {$sisa_waktu_str}, jam={$jam_awal}, menit={$menit_awal}, detik={$detik_awal} -->";
 ?>
+
 <div class="row">
     <div class="col-lg-12">
         <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
             <h6 class="m-0 font-weight-bold text-primary">UJIAN : <?=$rujian['judul'];?> </h6>
-            <div><b>Sisa Waktu : </b><button id="h_timer" class="btn-sm btn-danger"></button></div>
+            <div><b>Sisa Waktu : </b><span id="h_timer" class="badge bg-danger"></span></div>
         </div>
     </div>
 </div>
@@ -144,13 +149,20 @@ for($s=0; $s<count($arr_soal); $s++) {
     ];
     $arr_huruf = ["A","B","C","D","E"];
 
-    for($i=0;$i<=4;$i++){
+    for($i=0; $i<=4; $i++){
         $checked = ($arr_jawaban[$s] == $arr_pilihan[$i]['no']) ? "checked" : "";
         echo '<tr>
-            <td><input type="radio" name="jawab-'.$no.'" '.$checked.' onclick="kirim_jawaban('.$s.', '.$arr_pilihan[$i]['no'].')"> '.$arr_huruf[$i].'</td>
-            <td>'.$arr_pilihan[$i]['pilihan'].'</td>
+            <td>
+                <label style="cursor:pointer;">
+                    <input type="radio" name="jawab-'.$no.'" 
+                           value="'.$arr_pilihan[$i]['no'].'" '.$checked.'
+                           onclick="kirim_jawaban('.$s.', '.$arr_pilihan[$i]['no'].')">
+                    '.$arr_huruf[$i].'. '.$arr_pilihan[$i]['pilihan'].'
+                </label>
+            </td>
         </tr>';
     }
+    
     echo '</table>
             </div>
         </div>
@@ -191,6 +203,39 @@ function selesai(){
     var modal = new bootstrap.Modal(document.getElementById('modal-selesai'));
     modal.show();
 }
+
+// Timer countdown - nilai dari PHP langsung integer
+let jam   = <?= intval($jam_awal) ?>;
+let menit = <?= intval($menit_awal) ?>;
+let detik = <?= intval($detik_awal) ?>;
+console.log("DEBUG - jam:", jam, "menit:", menit, "detik:", detik);
+
+function updateTimer(){
+    if (detik === 0) {
+        if (menit === 0) {
+            if (jam === 0) {
+                document.getElementById("h_timer").innerText = "00:00:00";
+                clearInterval(timerInterval);
+                return;
+            }
+            jam--;
+            menit = 59;
+            detik = 59;
+        } else {
+            menit--;
+            detik = 59;
+        }
+    } else {
+        detik--;
+    }
+    document.getElementById("h_timer").innerText =
+        String(jam).padStart(2, '0') + ":" +
+        String(menit).padStart(2, '0') + ":" +
+        String(detik).padStart(2, '0');
+}
+
+updateTimer();
+let timerInterval = setInterval(updateTimer, 1000);
 </script>
 <?php
         }
