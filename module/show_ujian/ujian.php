@@ -1,35 +1,8 @@
 
 
-<script>
-var jam   = <?= $jam_awal ?>;
-var menit = <?= $menit_awal ?>;
-var detik = <?= $detik_awal ?>;
-
-function updateTimer(){
-    if (detik === 0) {
-        if (menit === 0) {
-            if (jam === 0) {
-                document.getElementById("h_timer").innerText = "00:00:00";
-                clearInterval(timerInterval);
-                return;
-            }
-            jam--; menit = 59; detik = 59;
-        } else {
-            menit--; detik = 59;
-        }
-    } else {
-        detik--;
-    }
-    document.getElementById("h_timer").innerText =
-        String(jam).padStart(2, '0') + ":" +
-        String(menit).padStart(2, '0') + ":" +
-        String(detik).padStart(2, '0');
-}
-
-updateTimer();
-let timerInterval = setInterval(updateTimer, 1000);
-</script>
 <?php
+
+
 if (count(get_included_files()) == 1) {
     exit("Direct access not permitted.");
 }
@@ -147,6 +120,36 @@ switch ($_GET['act']) {
         </div>
     </div>
 </div>
+
+<script>
+var jam   = <?= $jam_awal ?>;
+var menit = <?= $menit_awal ?>;
+var detik = <?= $detik_awal ?>;
+
+function updateTimer(){
+    if (detik === 0) {
+        if (menit === 0) {
+            if (jam === 0) {
+                document.getElementById("h_timer").innerText = "00:00:00";
+                clearInterval(timerInterval);
+                return;
+            }
+            jam--; menit = 59; detik = 59;
+        } else {
+            menit--; detik = 59;
+        }
+    } else {
+        detik--;
+    }
+    document.getElementById("h_timer").innerText =
+        String(jam).padStart(2, '0') + ":" +
+        String(menit).padStart(2, '0') + ":" +
+        String(detik).padStart(2, '0');
+}
+
+updateTimer();
+let timerInterval = setInterval(updateTimer, 1000);
+</script>
 
 
 <?php

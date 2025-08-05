@@ -1,60 +1,74 @@
 <?php
-$con=mysqli_connect('localhost','root','','kohk7173_e-learning')
-    or die("connection failed".mysqli_errno());
+// Aktifkan error log saat debug
+// error_reporting(E_ALL);
+// ini_set('display_errors', 1);
 
-$request=$_REQUEST;
-$col =array(
+// Set header JSON
+header('Content-Type: application/json');
+
+// Koneksi ke database
+$con = mysqli_connect('db', 'root', 'root', 'kohk7173_e-learning') or die(json_encode(["error" => "Connection failed"]));
+
+$request = $_REQUEST;
+
+// Kolom-kolom untuk sorting
+$col = array(
     0   => 'id',
     1   => 'nis',
     2   => 'nama_lengkap',
     3   => 'alamat',
-    6   => 'jenis_kelamin'
-);  //create column like table in database
+    4   => 'jenis_kelamin'
+);
 
-$sql ="SELECT * FROM siswa WHERE th_keluar = '9999' ORDER BY nis DESC";
-$query=mysqli_query($con,$sql);
+// Ambil total data tanpa filter
+$sql = "SELECT * FROM siswa WHERE th_keluar = '9999'";
+$query = mysqli_query($con, $sql);
+$totalData = mysqli_num_rows($query);
+$totalFilter = $totalData;
 
-$totalData=mysqli_num_rows($query);
+// Query untuk pencarian
+$sql = "SELECT * FROM siswa WHERE th_keluar = '9999'";
 
-$totalFilter=$totalData;
-
-//Search
-$sql ="SELECT * FROM siswa WHERE 1=1";
-if(!empty($request['search']['value'])){
-    $sql.=" AND (nis Like '".$request['search']['value']."%' ";
-    $sql.=" OR nama_lengkap Like '".$request['search']['value']."%' ";
-    $sql.=" OR jenis_kelamin Like '".$request['search']['value']."%' ";
-    $sql.=" OR alamat Like '".$request['search']['value']."%' )";
-}
-$query=mysqli_query($con,$sql);
-$totalData=mysqli_num_rows($query);
-
-//Order
-$sql.=" ORDER BY ".$col[$request['order'][0]['column']]."   ".$request['order'][0]['dir']."  LIMIT ".
-    $request['start']."  ,".$request['length']."  ";
-
-$query=mysqli_query($con,$sql);
-
-$data=array();
-
-while($row=mysqli_fetch_array($query)){
-    $subdata=array();
-    $subdata[]=$row[1]; //nis
-    $subdata[]=$row[2]; //nama_Lengkap
-    $subdata[]=$row[3]; //alamat
-    $subdata[]=$row[6]; //jenisk           //create event on click in button edit in cell datatable for display modal dialog           $row[0] is id in table on database
-    $subdata[]='<a href="?module=m_siswa&act=view_data&id='.$row[0].'" class="btn-sm btn-info"><i class="fas fa-info">&nbsp;</i>Detail</a> | <a href="?module=m_siswa&act=edit_data&id='.$row[0].'" class="btn-sm btn-warning"><i class="fas fa-edit">&nbsp;</i></a>';
-        //<a href="index.php?delete='.$row[0].'" onclick="return confirm(\'Are You Sure ?\')" class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-trash">&nbsp;</i>Delete</a>';
-    $data[]=$subdata;
+if (!empty($request['search']['value'])) {
+    $search = mysqli_real_escape_string($con, $request['search']['value']);
+    $sql .= " AND (nis LIKE '%$search%' ";
+    $sql .= " OR nama_lengkap LIKE '%$search%' ";
+    $sql .= " OR jenis_kelamin LIKE '%$search%' ";
+    $sql .= " OR alamat LIKE '%$search%') ";
 }
 
-$json_data=array(
-    "draw"              =>  intval($request['draw']),
-    "recordsTotal"      =>  intval($totalData),
-    "recordsFiltered"   =>  intval($totalFilter),
-    "data"              =>  $data
+// Hitung total setelah filter
+$query = mysqli_query($con, $sql);
+$totalFilter = mysqli_num_rows($query);
+
+// Sorting dan limit
+$order_column_index = isset($request['order'][0]['column']) ? (int)$request['order'][0]['column'] : 0;
+$order_direction = isset($request['order'][0]['dir']) ? $request['order'][0]['dir'] : 'asc';
+$order_column = isset($col[$order_column_index]) ? $col[$order_column_index] : 'id';
+
+$sql .= " ORDER BY $order_column $order_direction LIMIT {$request['start']}, {$request['length']}";
+
+$query = mysqli_query($con, $sql);
+
+$data = array();
+while ($row = mysqli_fetch_array($query)) {
+    $subdata = array();
+    $subdata[] = $row['nis'];
+    $subdata[] = $row['nama_lengkap'];
+    $subdata[] = $row['alamat'];
+    $subdata[] = $row['jenis_kelamin'];
+    $subdata[] = '<a href="?module=m_siswa&act=view_data&id=' . $row['id'] . '" class="btn-sm btn-info"><i class="fas fa-info">&nbsp;</i>Detail</a> 
+                  | <a href="?module=m_siswa&act=edit_data&id=' . $row['id'] . '" class="btn-sm btn-warning"><i class="fas fa-edit">&nbsp;</i></a>';
+    $data[] = $subdata;
+}
+
+// Buat JSON response
+$json_data = array(
+    "draw"            => intval($request['draw']),
+    "recordsTotal"    => intval($totalData),
+    "recordsFiltered" => intval($totalFilter),
+    "data"            => $data
 );
 
 echo json_encode($json_data);
-
 ?>

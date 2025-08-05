@@ -1,4 +1,5 @@
 <script>
+
 function confirmdelete(delUrl) {
 if (confirm("Anda yakin ingin menghapus?")) {
 document.location = delUrl;
@@ -6,6 +7,11 @@ document.location = delUrl;
 }
 </script>
 <?php
+
+header('Content-Type: application/json');
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 //Deteksi hanya bisa diinclude, tidak bisa langsung dibuka (direct open)
 if(count(get_included_files())==1){
 	echo "<meta http-equiv='refresh' content='0; url=http://$_SERVER[HTTP_HOST]'>";

@@ -19,7 +19,7 @@
 }
 /*Menyembunyikan input radio*/
 input[type=radio]{
-   display: block;
+   display: none;
 }
 /*Mengganti warna background huruf ketika input radio dicentang*/
 input[type=radio]:checked ~ .huruf{
