@@ -7,6 +7,7 @@ document.location = delUrl;
 }
 </script>
 <?php
+// oke
 //Deteksi hanya bisa diinclude, tidak bisa langsung dibuka (direct open)
 if(count(get_included_files())==1){
 	echo "<meta http-equiv='refresh' content='0; url=http://$_SERVER[HTTP_HOST]'>";
