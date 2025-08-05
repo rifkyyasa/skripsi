@@ -1,74 +1,69 @@
 <?php
-// Aktifkan error log saat debug
-// error_reporting(E_ALL);
-// ini_set('display_errors', 1);
-
-// Set header JSON
 header('Content-Type: application/json');
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
-// Koneksi ke database
-$con = mysqli_connect('db', 'root', 'root', 'kohk7173_e-learning') or die(json_encode(["error" => "Connection failed"]));
+// Koneksi
+$con = mysqli_connect('db', 'root', 'root', 'kohk_7173_e-learning');
+if (!$con) {
+    echo json_encode(["error" => "Koneksi gagal: " . mysqli_connect_error()]);
+    exit;
+}
 
+// Ambil parameter dari datatables
 $request = $_REQUEST;
-
-// Kolom-kolom untuk sorting
 $col = array(
-    0   => 'id',
-    1   => 'nis',
-    2   => 'nama_lengkap',
-    3   => 'alamat',
-    4   => 'jenis_kelamin'
+    0 => 'id',
+    1 => 'nis',
+    2 => 'nama_lengkap',
+    3 => 'alamat',
+    4 => 'jenis_kelamin'
 );
 
-// Ambil total data tanpa filter
+// Hitung total data
 $sql = "SELECT * FROM siswa WHERE th_keluar = '9999'";
-$query = mysqli_query($con, $sql);
+$query = mysqli_query($con, $sql) or die(json_encode(["error" => mysqli_error($con)]));
 $totalData = mysqli_num_rows($query);
 $totalFilter = $totalData;
 
-// Query untuk pencarian
+// Pencarian
 $sql = "SELECT * FROM siswa WHERE th_keluar = '9999'";
-
 if (!empty($request['search']['value'])) {
-    $search = mysqli_real_escape_string($con, $request['search']['value']);
-    $sql .= " AND (nis LIKE '%$search%' ";
-    $sql .= " OR nama_lengkap LIKE '%$search%' ";
-    $sql .= " OR jenis_kelamin LIKE '%$search%' ";
-    $sql .= " OR alamat LIKE '%$search%') ";
+    $search = $request['search']['value'];
+    $sql .= " AND (nis LIKE '%$search%' OR nama_lengkap LIKE '%$search%' OR alamat LIKE '%$search%' OR jenis_kelamin LIKE '%$search%')";
 }
 
-// Hitung total setelah filter
-$query = mysqli_query($con, $sql);
+$query = mysqli_query($con, $sql) or die(json_encode(["error" => mysqli_error($con)]));
 $totalFilter = mysqli_num_rows($query);
 
-// Sorting dan limit
-$order_column_index = isset($request['order'][0]['column']) ? (int)$request['order'][0]['column'] : 0;
-$order_direction = isset($request['order'][0]['dir']) ? $request['order'][0]['dir'] : 'asc';
-$order_column = isset($col[$order_column_index]) ? $col[$order_column_index] : 'id';
+// Order dan limit
+$columnIndex = intval($request['order'][0]['column']);
+$orderDir = $request['order'][0]['dir'];
+$start = intval($request['start']);
+$length = intval($request['length']);
+$sql .= " ORDER BY " . $col[$columnIndex] . " $orderDir LIMIT $start, $length";
 
-$sql .= " ORDER BY $order_column $order_direction LIMIT {$request['start']}, {$request['length']}";
+$query = mysqli_query($con, $sql) or die(json_encode(["error" => mysqli_error($con)]));
+$data = [];
 
-$query = mysqli_query($con, $sql);
-
-$data = array();
-while ($row = mysqli_fetch_array($query)) {
-    $subdata = array();
+while ($row = mysqli_fetch_assoc($query)) {
+    $subdata = [];
     $subdata[] = $row['nis'];
     $subdata[] = $row['nama_lengkap'];
     $subdata[] = $row['alamat'];
     $subdata[] = $row['jenis_kelamin'];
-    $subdata[] = '<a href="?module=m_siswa&act=view_data&id=' . $row['id'] . '" class="btn-sm btn-info"><i class="fas fa-info">&nbsp;</i>Detail</a> 
-                  | <a href="?module=m_siswa&act=edit_data&id=' . $row['id'] . '" class="btn-sm btn-warning"><i class="fas fa-edit">&nbsp;</i></a>';
+    $subdata[] = '<a href="?module=m_siswa&act=view_data&id=' . $row['id'] . '" class="btn-sm btn-info"><i class="fas fa-info"></i> Detail</a> | <a href="?module=m_siswa&act=edit_data&id=' . $row['id'] . '" class="btn-sm btn-warning"><i class="fas fa-edit"></i></a>';
     $data[] = $subdata;
 }
 
-// Buat JSON response
-$json_data = array(
-    "draw"            => intval($request['draw']),
-    "recordsTotal"    => intval($totalData),
+// Format output
+$json_data = [
+    "draw" => intval($request['draw']),
+    "recordsTotal" => intval($totalData),
     "recordsFiltered" => intval($totalFilter),
-    "data"            => $data
-);
+    "data" => $data
+];
 
+// Kirim JSON ke datatables
 echo json_encode($json_data);
 ?>
