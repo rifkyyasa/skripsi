@@ -122,24 +122,67 @@ if (empty($_SESSION['namauser']) AND empty($_SESSION['passuser'])){
 				}
 
 				echo '</table></div><div class="card-footer"><div class="kakisoal" style="width: 97.7%;">';
-				echo '<a onclick="selesai()"><button class="btn-sm btn-danger btn-next activebutton">SELESAI</button></a>';
+				if ($s == count($arr_soal) - 1) { // jika soal terakhir
+					echo '<a onclick="selesai()"><button class="btn-sm btn-danger btn-next activebutton">SELESAI</button></a>';
+				}
 				echo '</div></div></div></div></div>';
 			}
 
-			echo '</div>';
-			echo '<div class="modal fade" id="modal-selesai" role="dialog"><form method="POST" action="?module=sis_ujian&act=selesai_ujian" enctype="multipart/form-data" role="form">';
-			echo '<div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h4 class="modal-title">Konfirmasi Tes</h4></div><div class="modal-body">';
-			echo '<input type="hidden" name="ujian" value="'.$id_ujian.'">';
-			echo '<p>Terimakasih telah berpartisipasi dalam tes ini.<br>Silahkan klik tombol SELESAI untuk mengakhiri test.</p></div>';
-			echo '<div class="modal-footer"><button type="submit" class="btn btn-success" name="simpan">SELESAI</button><button type="button" class="btn btn-danger" data-dismiss="modal">TIDAK</button></div></div></div></form></div>';
+			echo '<div class="modal fade" id="modal-selesai" role="dialog">';
+echo '<div class="modal-dialog"><div class="modal-content">';
+echo '<div class="modal-header"><h4 class="modal-title">Konfirmasi Tes</h4></div>';
+echo '<div class="modal-body">';
+echo '<p>Terimakasih telah berpartisipasi dalam tes ini.<br>Silahkan klik tombol SELESAI untuk mengakhiri test.</p>';
+echo '</div>';
+echo '<div class="modal-footer">';
+echo '<button type="button" class="btn btn-success" onclick="selesai_ujian()">SELESAI</button>';
+echo '<button type="button" class="btn btn-danger" data-dismiss="modal">TIDAK</button>';
+echo '</div>';
+
+
+
 		  }
 		  break;
-		case "selesai_ujian":
-			$id_ujian = $_POST['ujian'];
-			$id_siswa = $_SESSION['id_user'];
-			mysqli_query($koneksi, "UPDATE nilai SET status='selesai', sisa_waktu='00:00:00' WHERE id_siswa='$id_siswa' AND id_ujian='$id_ujian'");
-			header("Location: ?module=sis_ujian");
-			break;
+          case "selesai_ujian":
+            $id_ujian = $_POST['ujian'];
+            $id_siswa = $_SESSION['id_user'];
+        
+            // Ambil semua jawaban siswa
+            $qjawab = mysqli_query($koneksi, "SELECT a.id_soal, a.jawaban, b.kunci 
+                                              FROM analisis a 
+                                              JOIN soal_pilganda b ON a.id_soal = b.id_soalpg 
+                                              WHERE a.id_siswa='$id_siswa' AND a.id_ujian='$id_ujian'");
+        
+            $benar = 0;
+            $salah = 0;
+            $kosong = 0;
+        
+            while ($r = mysqli_fetch_array($qjawab)) {
+                if ($r['jawaban'] == 0) {
+                    $kosong++;
+                } elseif ($r['jawaban'] == $r['kunci']) {
+                    $benar++;
+                } else {
+                    $salah++;
+                }
+            }
+        
+            $total_soal = $benar + $salah + $kosong;
+            $nilai = ($total_soal == 0) ? 0 : round(($benar / $total_soal) * 100, 2);
+        
+            // Update nilai
+            mysqli_query($koneksi, "UPDATE nilai SET 
+                jml_benar = '$benar',
+                jml_salah = '$salah',
+                jml_kosong = '$kosong',
+                nilai = '$nilai',
+                status = 'selesai',
+                sisa_waktu = '00:00:00'
+                WHERE id_siswa = '$id_siswa' AND id_ujian = '$id_ujian'");
+        
+            header("Location: ?module=sis_ujian");
+            break;
+        
 	}
 }
 ?>

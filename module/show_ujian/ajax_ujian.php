@@ -21,29 +21,34 @@ if($_GET['action']=="kirim_jawaban"){
     $jawaban[$index] = $_POST['jawab'];
 	
     $jawabanfix = implode(",", $jawaban);
+    
     mysqli_query($koneksi, "UPDATE nilai SET jawaban='$jawabanfix' WHERE id_ujian='$_POST[ujian]' AND id_siswa='$_SESSION[id_user]'");
     mysqli_query($koneksi, "UPDATE analisis SET jawaban='$jawaban[$index]' WHERE id_ujian='$_POST[ujian]' AND id_soal='$arr_soal[$index]' AND id_siswa='$_SESSION[id_user]'");
-    echo "ok";
+    echo"ok";
+    exit;
 }
 
 elseif($_GET['action']=="selesai_ujian"){
-    $rnilai = mysqli_fetch_array(mysqli_query($koneksi, "SELECT * FROM nilai WHERE id_ujian='$_POST[ujian]' AND nis='$_SESSION[nis]'"));
-    $arr_soal = explode(",", $rnilai['acak_soal']);
-    $jawaban = explode(",", $rnilai['jawaban']);
-    $jbenar = 0;
-    $jkosong = 0;
-    $jsoal = count($arr_soal);
+   $rnilai = mysqli_fetch_array(mysqli_query($koneksi, "SELECT * FROM nilai WHERE id_ujian='$_POST[ujian]' AND id_siswa='$_SESSION[id_user]'"));
+   $arr_soal = explode(",", $rnilai['acak_soal']);
+   $jawaban = explode(",", $rnilai['jawaban']);
+   $jbenar = 0;
+   $jkosong = 0;
+   $jsoal = count($arr_soal);
 
-    for($i = 0; $i < $jsoal; $i++){
-        $rsoal = mysqli_fetch_array(mysqli_query($koneksi, "SELECT * FROM soal WHERE id_ujian='$_POST[ujian]' AND id_soal='$arr_soal[$i]'"));
-        if($rsoal['kunci'] == $jawaban[$i]) $jbenar++;
-        if($jawaban[$i] == 0) $jkosong++;
-    }
-    $jsalah = $jsoal - $jbenar - $jkosong;
-    $nilai = ($jbenar / $jsoal) * 100;
+   for($i = 0; $i < $jsoal; $i++){
+      $rsoal = mysqli_fetch_array(mysqli_query($koneksi, "SELECT * FROM soal_pilganda WHERE id_tujian='$_POST[ujian]' AND id_soalpg='$arr_soal[$i]'"));
+      if($rsoal['kunci'] == $jawaban[$i]) $jbenar++;
+       if($jawaban[$i] == 0) $jkosong++;
+   }
 
-    mysqli_query($koneksi, "UPDATE nilai SET jml_benar='$jbenar', jml_kosong='$jkosong', jml_salah='$jsalah', nilai='$nilai', status='selesai' WHERE id_ujian='$_POST[ujian]' AND nis='$_SESSION[nis]'");
-    mysqli_query($koneksi, "UPDATE siswa SET status='Selesai' WHERE nis='$_SESSION[nis]'");
-    echo "ok";
+   $jsalah = $jsoal - $jbenar - $jkosong;
+   $nilai = ($jbenar / $jsoal) * 100;
+  
+   mysqli_query($koneksi, "UPDATE nilai SET jml_benar='$jbenar', jml_kosong='$jkosong', jml_salah='$jsalah', nilai='$nilai', status='selesai' WHERE id_ujian='$_POST[ujian]' AND id_siswa='$_SESSION[id_user]'");
+   mysqli_query($koneksi, "UPDATE siswa SET status='Selesai' WHERE id='$_SESSION[id_user]'");
+   echo "ok";
+   exit;
 }
+
 ?>

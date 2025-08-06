@@ -17,13 +17,35 @@ function ragu_ragu(no){
    }
 }
 
-//Ketika ujian selesai
-function selesai(){
-   $('#modal-selesai').modal({
-      'show' : true,
-      'backdrop' : 'static'
+// ujia selesai
+function selesai_ujian() {
+   let ujian = $('#ujian').val();
+   console.log("Ujian ID:", ujian);
+
+   $.ajax({
+       url: "ajax_ujian.php?action=selesai_ujian",
+       type: "POST",
+       data: { ujian: ujian },
+       success: function(data){
+           console.log("Respon server:", data);
+           if(data.trim() === "ok"){
+               $('#modal-selesai').modal('hide');
+               setTimeout(function(){
+                  window.location.href = "?module=sis_ujian";
+               }, 500);
+           } else {
+               alert("Respon server: " + data);
+           }
+       },
+       error: function(){
+           alert('Tidak dapat memproses nilai!');
+       }
    });
+   return false;
 }
+
+
+
 
 //Ketika memilih jawaban
 function kirim_jawaban(index, jawab){
@@ -50,26 +72,17 @@ function kirim_jawaban(index, jawab){
 
 }
 
-//SELESAI UJIAN
-function selesai_ujian(ujian){
-   $.ajax({
-      url: "ajax_ujian.php?action=selesai_ujian",
-      type: "POST",
-      data: "ujian="+ujian,
-      success: function(data){
-         if(data=="ok"){
-            window.location = "media.php?module=success";
-         }else{
-            alert(data);
-         }
-      },
-      error: function(){
-         alert('Tidak dapat memproses nilai!');
-      }
-   });
-   //window.location = "media.php?module=success";
-   return false;
-}
+
+
+
+
+   function selesai() {
+      $('#modal-selesai').modal({
+         backdrop: 'static',
+         keyboard: false,
+         show: true
+      });
+   }
 
 
 function AlertIt() {
@@ -113,7 +126,7 @@ $("#ahir").css("display", "none");
 
 $("#awal").css("display", "none");
 $("#ahir").css("display", "block");					
-//e.preventDefault();
+// e.preventDefault();
 			}//if close
 }
 

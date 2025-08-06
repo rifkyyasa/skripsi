@@ -411,6 +411,8 @@ $(document).ready(function(){
   <!-- Page level plugins -->
   <script src="plugin/datatables/jquery.dataTables.min.js"></script>
   <script src="plugin/datatables/dataTables.bootstrap4.min.js"></script>
+  <script src="dist/js/ujian.js"></script>
+
   <!--IONICON-->
   <script src="https://unpkg.com/ionicons@5.0.0/dist/ionicons.js"></script>
 
@@ -567,6 +569,8 @@ $(document).ready(function(){
   
 
 <!-- JS UJIAN ONLINE -->
+<script src="assets/js/jquery.jfontsize-1.0.min.js"></script>
+<script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
 <script type="text/javascript" src="dist/js/jquery.countdownTimer.js"></script>
 <script type="text/javascript" src="dist/js/kakyusuf.js"></script>
 <script type="text/javascript" src="dist/js/ujian.js"></script>

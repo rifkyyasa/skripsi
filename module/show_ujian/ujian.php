@@ -154,8 +154,6 @@ let timerInterval = setInterval(updateTimer, 1000);
 
 <?php
         }
-    break;
-
     case "selesai_ujian":
         $id_ujian = $_POST['id_ujian'];
         mysqli_query($koneksi, "UPDATE nilai 
