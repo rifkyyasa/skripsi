@@ -4,7 +4,7 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 // Koneksi
-$con = mysqli_connect('db', 'root', 'root', 'kohk_7173_e-learning');
+$con = mysqli_connect('localhost', 'root', '', 'kohk_7173_e-learning');
 if (!$con) {
     echo json_encode(["error" => "Koneksi gagal: " . mysqli_connect_error()]);
     exit;

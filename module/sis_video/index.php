@@ -61,7 +61,7 @@ else{
       $video = $r['youtube'];
     }
     else{
-      $video = 'module/files_video/'.$r[nama_video];
+      $video = 'module/files_video/'.$r['nama_video'];
     }
 
   $mapel = mysqli_fetch_array(mysqli_query($koneksi,"SELECT nama_mapel FROM m_mapel WHERE id_mapel='$r[id_mapel]'"));

@@ -192,34 +192,58 @@ elseif (isset($_POST['essay_bank'])) {
     if (!isset($tgl_sekarang) || empty($tgl_sekarang)) {
         $tgl_sekarang = date('Y-m-d');
     }
+    // Debug log
+
+ // Hentikan agar kita bisa baca hasil debug
+
 
     $id_tujian = intval($_POST['id_tujian']);
     $id_soal   = isset($_POST['id']) ? $_POST['id'] : [];
 
+
+    $gagal_id = [];
+
     if (!empty($id_soal) && is_array($id_soal)) {
         foreach ($id_soal as $soal_id) {
             $soal_id = intval($soal_id);
-            $cd = mysqli_fetch_array(mysqli_query(
-                $koneksi,
-                "SELECT pertanyaan, gambar FROM bank_esay WHERE id='$soal_id'"
-            ));
+           
+$sql = mysqli_query($koneksi, "SELECT pertanyaan FROM bank_esay WHERE id='$soal_id'");
+  
+          if ($cd = mysqli_fetch_array($sql)) {
+   
+    $pertanyaan = mysqli_real_escape_string($koneksi, $cd['pertanyaan']);
+    $gambar = mysqli_real_escape_string($koneksi, $cd['gambar']);
 
-            $pertanyaan = mysqli_real_escape_string($koneksi, $cd['pertanyaan']);
-            $gambar = !empty($cd['gambar']) ? $cd['gambar'] : '';
+    if (trim($pertanyaan) === '') {
+        echo "<div style='color:red'>[Debug] Soal ID $soal_id ditemukan tapi kolom `pertanyaan` kosong!</div>";
+    } else {
+        echo "<div style='color:green'>[Debug] Soal ID $soal_id: " . htmlentities($pertanyaan) . "</div>";
+    }
 
-            mysqli_query(
-                $koneksi,
-                "INSERT INTO soal_esay (id_tujian, pertanyaan, gambar, tgl_buat, jenis_soal)
-                 VALUES ('$id_tujian', '$pertanyaan', '$gambar', '$tgl_sekarang', 'essay')"
-            ) or die(mysqli_error($koneksi));
+    mysqli_query(
+        $koneksi,
+        "INSERT INTO soal_esay (id_tujian, pertanyaan, gambar, tgl_buat, jenis_soal)
+        VALUES ('$id_tujian', '$pertanyaan', '$gambar', '$tgl_sekarang', 'essay')"
+    ) or die(mysqli_error($koneksi));
+}else {
+                $gagal_id[] = $soal_id;
+            }
         }
+
+
+        if (count($gagal_id) > 0) {
+            echo "<div style='color:red'>Soal ID " . implode(', ', $gagal_id) . " tidak ditemukan di bank soal.</div>";
+        }
+
         save_alert('save', 'Soal dari bank soal berhasil ditambahkan');
     } else {
         save_alert('error', 'Tidak ada soal yang dipilih');
     }
+     
 
     htmlRedirect('media.php?module='.$module.'&act=essay&id='.$id_tujian, 1);
 }
+
 
 // UPDATE ESSAY
 elseif (isset($_POST['update_essay'])) {

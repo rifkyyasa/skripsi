@@ -5,7 +5,7 @@
             <div class="row">
               <div class="col-md">
                 <div class="ftco-footer-widget mb-4">
-                  <h2 class="ftco-heading-2" style="font-weight: bold;">Digital Learning SMK KAWULA INDONESIA </h2>
+                  <h2 class="ftco-heading-2" style="font-weight: bold;">Digital Learning SMP PGRI CIKARANG BARAT </h2>
                   <p class="text-justify">Karena Pada pembejaran digital ini siswa akan dibimbing jarak jauh oleh guru mata pelajarannya masing-masing melalui website yang telah disiapkan, siswa/i akan diberikan materi pelajaran yang berupa modul sesuai dengan kurikulum yang diterapkan, kemudian di akhir setiap modul ada test yang diberikan bagi setiap siswa/i yang bertujuan untuk mengukur ketercapaian belajar siswa</p>
                   
                 </div>
@@ -14,7 +14,7 @@
           </div>
           <div class="col-md-4">
             <div class="ftco-footer-widget mb-4">
-              <p>&copy; SMK KAWULA INDONESIA </p>
+              <p>&copy; SMP PGRI CIKARANG BARAT </p>
               <script type="text/javascript"> //<![CDATA[
                 var tlJsHost = ((window.location.protocol == "https:") ? "https://secure.trust-provider.com/" : "http://www.trustlogo.com/");
                 document.write(unescape("%3Cscript src='" + tlJsHost + "trustlogo/javascript/trustlogo.js' type='text/javascript'%3E%3C/script%3E"));

@@ -9,7 +9,7 @@
               </a>
             </h1>
             <!-- <h1 class="ftco-heading ftco-animate text-warning bg-light">Sistem Pemebelajaran Digital</h1>
-            <h2 class="ftco-heading ftco-animate text-danger bg-dark"><b>SMKS YABHINKA KOTA CILEGON</b></h2> -->  
+            <h2 class="ftco-heading ftco-animate text-danger bg-dark"><b></b></h2> -->  
             <p>
               <a href="#login" class="btn btn-sm btn-primary ftco-animate rounded">Log-in</a>
               <a href="register.html" target="_blank" class="btn btn-sm btn-warning ftco-animate">Register</a>
@@ -25,9 +25,9 @@
 
           <div class="col-md-5 pr-md-5 mb-5">
            
-              <p>SMK KAWULA INDONESIA</p>
+              <p>SMP PGRI CIKARANG BARAT</p>
               <!-- <p>20606248</p>
-              <p>JL. PASAR BARU NO.68 JOMBANG WETAN CILEGON</p> -->
+              <p>Jl. Telaga Asih Jl. Imam Bonjol II No.23, Telaga Asih, Kec. Cikarang Bar., Kabupaten Bekasi, Jawa Barat 17530</p> -->
             <center>
             <p style="text-align: justify;">Karena Pada pembejaran digital ini siswa akan dibimbing jarak jauh oleh guru mata pelajarannya masing-masing melalui website yang telah disiapkan, siswa/i akan diberikan materi pelajaran yang berupa modul sesuai dengan kurikulum yang diterapkan, kemudian di akhir setiap modul ada test yang diberikan bagi setiap siswa/i yang bertujuan untuk mengukur ketercapaian belajar siswa</p>
        </center>

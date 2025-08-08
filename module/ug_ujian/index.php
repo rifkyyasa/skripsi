@@ -475,7 +475,7 @@ case "essay":
         <input type="hidden" class="form-control" name="id_tujian" value="<?= $_GET['id'];?>">
       <?php 
         $sql_bank_essay = mysqli_query($koneksi,"SELECT * FROM bank_esay WHERE pembuat ='$_SESSION[id_user]'");
-        // echo "SELECT * FROM bank_esay WHERE pembuat ='$_SESSION[id_user]'";
+        
         $no = 1;
       ?>
       <table class="table table-striped" id="tab_bank1" >
@@ -486,6 +486,7 @@ case "essay":
           <?php 
           foreach ($sql_bank_essay as $rb) {
             $mpl = mysqli_fetch_array(mysqli_query($koneksi,"SELECT nama_mapel FROM m_mapel WHERE id_mapel = '$rb[id_mapel]'")); 
+           
           ?>
           <tr><td><?=$no;?></td><td><?=$rb['pertanyaan'];?></td><td><?=$mpl['nama_mapel'];?></td><td><input type="checkbox" name="id[]" value="<?=$rb['id'];?>" class="form" ></td></tr>
           <?php 

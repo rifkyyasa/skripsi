@@ -30,6 +30,10 @@ if($_GET['action']=="kirim_jawaban"){
 
 elseif($_GET['action']=="selesai_ujian"){
    $rnilai = mysqli_fetch_array(mysqli_query($koneksi, "SELECT * FROM nilai WHERE id_ujian='$_POST[ujian]' AND id_siswa='$_SESSION[id_user]'"));
+    if (!$rnilai) {
+       echo "Data nilai tidak ditemukan.";
+       exit;
+   }
    $arr_soal = explode(",", $rnilai['acak_soal']);
    $jawaban = explode(",", $rnilai['jawaban']);
    $jbenar = 0;

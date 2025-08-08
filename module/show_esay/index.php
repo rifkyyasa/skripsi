@@ -59,7 +59,7 @@ else{
 								 	$edit = "<i class='btn-sm btn-warning'>Belum di jawab</i>";
 								 }
 								 else {
-								 	$isi = substr($r['jawaban_esay'],0,5).'... '.'<a href="#" data-toggle="modal" data-target="#view_'.$r[id_nesay].'"> more...</a>';
+								 	$isi = substr($r['jawaban_esay'],0,5).'... '.'<a href="#" data-toggle="modal" data-target="#view_'.$r['id_nesay'].'"> more...</a>';
 								 	$edit = "<a href='?module=show_esay&act=edit&id_soal=$s[id_soal]&id_ujian=$id_ujian&id=$r[id_nesay]' class='btn-sm btn-warning'><i class='fas fa-edit'></i> Edit</a>";
 								 }
 							 ?>
